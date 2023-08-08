@@ -104,4 +104,10 @@ export class Bitfinex {
     lastNonce = lastNonce < now ? now : lastNonce + 1;
     return lastNonce;
   };
+
+  getPlatformStatus = async () => {
+    const url = `/platform/status`;
+    const payload = {};
+    return this._request(url, payload);
+  };
 }

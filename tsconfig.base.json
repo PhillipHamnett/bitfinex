@@ -8,9 +8,17 @@
     "allowJs": true,
     "declaration": true,
     "declarationMap": true,
-    "allowSyntheticDefaultImports": true
-  },
-  "files": [
-    "../src/index.ts"
-  ]
+    "allowSyntheticDefaultImports": true,
+    "types": [
+      "jest",
+      "node"
+    ],
+    "files": [
+      "../src/index.ts"
+    ],
+    "include": [
+      "../src/**/*.ts",
+      "../tests/**/*.ts"
+    ]
+  }
 }
