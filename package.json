@@ -27,5 +27,8 @@
   "bugs": {
     "url": "https://github.com/PhillipHamnett/bitfinex/issues"
   },
-  "homepage": "https://github.com/PhillipHamnett/bitfinex#readme"
+  "homepage": "https://github.com/PhillipHamnett/bitfinex#readme",
+  "devDependencies": {
+    "prettier": "^3.0.1"
+  }
 }
