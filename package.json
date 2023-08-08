@@ -9,7 +9,8 @@
     "build": "npm run clean && npm run build:esm && npm run build:cjs",
     "build:esm": "tsc -p ./configs/tsconfig.esm.json && mv lib/esm/index.js lib/esm/index.mjs",
     "build:cjs": "tsc -p ./configs/tsconfig.cjs.json",
-    "prepack": "npm run build"
+    "prepack": "npm run build",
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -37,7 +38,12 @@
     "lib/**/*"
   ],
   "devDependencies": {
-    "prettier": "^3.0.1"
+    "@types/chai": "^4.3.5",
+    "@types/mocha": "^10.0.1",
+    "chai": "^4.3.7",
+    "mocha": "^10.2.0",
+    "prettier": "^3.0.1",
+    "ts-node": "^10.9.1"
   },
   "exports": {
     ".": {
