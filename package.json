@@ -2,9 +2,14 @@
   "name": "@philliphamnett/bitfinex",
   "version": "1.0.0",
   "description": "A library of useful commands to interface with the Bitfinex API",
-  "main": "index.js",
+  "types": "./lib/cjs/types/index.d.ts",
+  "main": "./lib/cjs/index.js",
   "scripts": {
-    "test": "jest"
+    "clean": "rm -rf ./lib",
+    "build": "npm run clean && npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc -p ./configs/tsconfig.esm.json && mv lib/esm/index.js lib/esm/index.mjs",
+    "build:cjs": "tsc -p ./configs/tsconfig.cjs.json",
+    "prepack": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -28,7 +33,22 @@
     "url": "https://github.com/PhillipHamnett/bitfinex/issues"
   },
   "homepage": "https://github.com/PhillipHamnett/bitfinex#readme",
+  "files": [
+    "lib/**/*"
+  ],
   "devDependencies": {
     "prettier": "^3.0.1"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./lib/esm/types/index.d.ts",
+        "default": "./lib/esm/index.mjs"
+      },
+      "require": {
+        "types": "./lib/cjs/types/index.d.ts",
+        "default": "./lib/cjs/index.js"
+      }
+    }
   }
 }
