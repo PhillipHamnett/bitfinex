@@ -12,13 +12,17 @@
     "types": [
       "jest",
       "node"
-    ],
-    "files": [
-      "../src/index.ts"
-    ],
-    "include": [
-      "../src/**/*.ts",
-      "../tests/**/*.ts"
     ]
-  }
+  },
+  "files": [
+    "./src/index.ts"
+  ],
+  "include": [
+    "./src/**/*.ts",
+    "./tests/**/*.ts"
+  ],
+  "exclude": [
+    "lib",
+    "node_modules"
+  ]
 }

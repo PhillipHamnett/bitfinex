@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig } from "axios";
+import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import * as crypto from "crypto";
 
 const BASE_TIMEOUT = 15000;
@@ -42,17 +42,17 @@ export class Bitfinex {
   }
 
   _request = async (url: string, payload: AxiosRequestConfig<any>) => {
-    const response = await axios(url, payload);
+    const response = await axios.get(url, payload); // TODO: Add method
     if (response.status !== 200) {
       throw this._apiError(response);
     }
     return JSON.parse(response.statusText);
   };
 
-  _apiError = (response) =>
+  _apiError = (response: AxiosResponse<any, any>) =>
     new Error(`HTTP code ${response.status} ${response.statusText || ""}`);
 
-  _makeAuthRequest = async (path, payload = {}) => {
+  _makeAuthRequest = async (path: string, payload = {}) => {
     if ((!this._apiKey || !this._apiSecret) && !this._authToken) {
       throw new Error("missing api key or secret");
     }
@@ -81,7 +81,7 @@ export class Bitfinex {
     return this._request(url, reqOpts);
   };
 
-  _genAuthSig = (secret, payload = "") => {
+  _genAuthSig = (secret: string, payload = "") => {
     const nonce = this.getNonce();
     if (payload.length === 0) {
       payload = `AUTH${nonce}${nonce}`;
@@ -108,6 +108,6 @@ export class Bitfinex {
   getPlatformStatus = async () => {
     const url = `/platform/status`;
     const payload = {};
-    return this._request(url, payload);
+    return await this._request(url, payload);
   };
 }
