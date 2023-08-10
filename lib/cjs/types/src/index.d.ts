@@ -1,4 +1,9 @@
 import { AxiosRequestConfig, AxiosResponse } from "axios";
+interface AuthenticationSignature {
+    payload: string;
+    sig: string;
+    nonce: number;
+}
 export declare class Bitfinex {
     private _url;
     private _apiKey;
@@ -20,15 +25,13 @@ export declare class Bitfinex {
         agent: null;
         timeout: number;
     });
-    _request: (url: string, payload: AxiosRequestConfig<any>) => Promise<any>;
+    _request: (method: string, url: string, payload?: string, config?: AxiosRequestConfig) => Promise<any>;
     _apiError: (response: AxiosResponse<any, any>) => Error;
     _makeAuthRequest: (path: string, payload?: {}) => Promise<any>;
-    _genAuthSig: (secret: string, payload?: string) => {
-        payload: string;
-        sig: string;
-        nonce: number;
-    };
+    _genAuthSig: (secret: string, payload?: string) => AuthenticationSignature;
     getNonce: () => number;
-    getPlatformStatus: () => Promise<any>;
+    getPlatformStatus: () => Promise<number>;
+    getTicker: (pair: string) => Promise<any>;
 }
+export {};
 //# sourceMappingURL=index.d.ts.map

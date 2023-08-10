@@ -1,6 +1,6 @@
 {
   "name": "@philliphamnett/bitfinex",
-  "version": "1.0.1",
+  "version": "1.0.4",
   "description": "A library of useful commands to interface with the Bitfinex API",
   "type": "module",
   "types": "./lib/cjs/types/index.d.ts",
@@ -8,9 +8,8 @@
   "scripts": {
     "clean": "rm -rf ./lib",
     "build": "npm run clean && npm run build:esm && npm run build:cjs",
-    "build:esm": "tsc -p ./tsconfig.esm.json && mv lib/esm/src/index.js lib/esm/src/index.mjs",
-    "build:cjs": "tsc -p ./tsconfig.cjs.json",
-    "publish": "npm run build && npm publish --access public",
+    "build:esm": "tsc -p ./tsconfig.esm.json; echo '{\"type\": \"module\"}' > ./lib/esm/src/src/package.json",
+    "build:cjs": "tsc -p ./tsconfig.cjs.json; echo '{\"type\": \"commonjs\"}' > ./lib/cjs/src/src/package.json",
     "test": "jest"
   },
   "repository": {
@@ -52,12 +51,12 @@
   "exports": {
     ".": {
       "import": {
-        "types": "./lib/esm/types/index.d.ts",
-        "default": "./lib/esm/index.mjs"
+        "types": "./lib/esm/types/src/index.d.ts",
+        "default": "./lib/esm/src/src/index.js"
       },
       "require": {
-        "types": "./lib/cjs/types/index.d.ts",
-        "default": "./lib/cjs/index.js"
+        "types": "./lib/cjs/types/src/index.d.ts",
+        "default": "./lib/cjs/src/src/index.js"
       }
     }
   }

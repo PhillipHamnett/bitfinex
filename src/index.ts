@@ -6,6 +6,29 @@ const API_URL = "https://api.bitfinex.com";
 
 let lastNonce = Date.now() * 1000;
 
+interface GetPlatformStatusResponse {
+  status: number[];
+}
+interface AuthenticationSignature {
+  payload: string;
+  sig: string;
+  nonce: number;
+}
+interface GetTickerResponse {
+  data: number[];
+}
+interface TickerData {
+  bid: number;
+  bidSize: number;
+  ask: number;
+  askSize: number;
+  dailyChange: number;
+  dailyChangePerc: number;
+  lastPrice: number;
+  volume: number;
+  high: number;
+  low: number;
+}
 export class Bitfinex {
   private _url: string;
   private _apiKey: string;
@@ -41,12 +64,23 @@ export class Bitfinex {
     this._timeout = BASE_TIMEOUT;
   }
 
-  _request = async (url: string, payload: AxiosRequestConfig<any>) => {
-    const response = await axios.get(url, payload); // TODO: Add method
+  _request = async (
+    method: string,
+    url: string,
+    payload: string = "",
+    config: AxiosRequestConfig = {},
+  ): Promise<any> => {
+    url = `${this._url}/v2/${url}`;
+    let response: AxiosResponse<any, any>;
+    if (method === "get") response = await axios.get(url, config);
+    else if (method === "put") response = await axios.put(url, payload, config);
+    else if (method === "post")
+      response = await axios.post(url, payload, config);
+    else throw new Error("Invalid method");
     if (response.status !== 200) {
       throw this._apiError(response);
     }
-    return JSON.parse(response.statusText);
+    return response.data;
   };
 
   _apiError = (response: AxiosResponse<any, any>) =>
@@ -66,22 +100,18 @@ export class Bitfinex {
     };
     const auth = this._authToken ? { "bfx-token": this._authToken } : keys();
 
-    const reqOpts = {
-      method: "POST",
-      timeout: this._timeout,
+    const config = {
       headers: {
         "content-type": "application/json",
         "bfx-nonce": n,
         ...auth,
       },
-      agent: this._agent,
-      body: JSON.stringify(payload),
     };
 
-    return this._request(url, reqOpts);
+    return this._request("post", url, JSON.stringify(payload), config);
   };
 
-  _genAuthSig = (secret: string, payload = "") => {
+  _genAuthSig = (secret: string, payload = ""): AuthenticationSignature => {
     const nonce = this.getNonce();
     if (payload.length === 0) {
       payload = `AUTH${nonce}${nonce}`;
@@ -99,15 +129,36 @@ export class Bitfinex {
     };
   };
 
-  getNonce = () => {
+  getNonce = (): number => {
     const now = Date.now() * 1000;
     lastNonce = lastNonce < now ? now : lastNonce + 1;
     return lastNonce;
   };
 
-  getPlatformStatus = async () => {
-    const url = `/platform/status`;
-    const payload = {};
-    return await this._request(url, payload);
+  getPlatformStatus = async (): Promise<number> => {
+    const result = await axios.get<GetPlatformStatusResponse>(
+      `${this._url}/platform/status`,
+    );
+    if (result.status === 200) return 1;
+    else return 0;
+  };
+
+  getTicker = async (pair: string): Promise<TickerData> => {
+    const url = `/ticker/${pair}`;
+    const response: AxiosResponse<GetTickerResponse> = await axios.get(url);
+    if (response.status !== 200)
+      throw new Error("Failed to get ticker: " + response.statusText);
+    return {
+      bid: response.data.data[0],
+      bidSize: response.data.data[1],
+      ask: response.data.data[2],
+      askSize: response.data.data[3],
+      dailyChange: response.data.data[4],
+      dailyChangePerc: response.data.data[5],
+      lastPrice: response.data.data[6],
+      volume: response.data.data[7],
+      high: response.data.data[8],
+      low: response.data.data[9],
+    } as TickerData;
   };
 }

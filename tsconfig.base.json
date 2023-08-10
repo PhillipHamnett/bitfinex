@@ -1,11 +1,10 @@
 {
   "compilerOptions": {
     "strict": true,
-    "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true,
-    "checkJs": true,
-    "allowJs": true,
+    "skipLibCheck": false,
+    "checkJs": false,
+    "allowJs": false,
     "declaration": true,
     "declarationMap": true,
     "allowSyntheticDefaultImports": true,
