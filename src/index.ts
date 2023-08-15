@@ -6,21 +6,35 @@ const API_URL = "https://api.bitfinex.com";
 
 let lastNonce = Date.now() * 1000;
 
-interface GetPlatformStatusResponse {
+export interface GetPlatformStatusResponse {
   status: number[];
 }
-interface AuthenticationSignature {
+export interface AuthenticationSignature {
   payload: string;
   sig: string;
   nonce: number;
 }
-interface GetTickerResponse {
-  data: number[];
-}
-interface TickerData {
+type GetTickerResponse = number[];
+
+export interface TickerTradeData {
   bid: number;
   bidSize: number;
   ask: number;
+  askSize: number;
+  dailyChange: number;
+  dailyChangePerc: number;
+  lastPrice: number;
+  volume: number;
+  high: number;
+  low: number;
+}
+export interface TickerFundingData {
+  frr: number;
+  bid: number;
+  bidPeriod: number;
+  bidSize: number;
+  ask: number;
+  askPeriod: number;
   askSize: number;
   dailyChange: number;
   dailyChangePerc: number;
@@ -143,22 +157,42 @@ export class Bitfinex {
     else return 0;
   };
 
-  getTicker = async (pair: string): Promise<TickerData> => {
-    const url = `/ticker/${pair}`;
+  getTicker = async (
+    pair: string,
+  ): Promise<TickerTradeData | TickerFundingData | undefined> => {
+    const url = `https://api-pub.bitfinex.com/v2/ticker/${pair}`;
     const response: AxiosResponse<GetTickerResponse> = await axios.get(url);
     if (response.status !== 200)
       throw new Error("Failed to get ticker: " + response.statusText);
-    return {
-      bid: response.data.data[0],
-      bidSize: response.data.data[1],
-      ask: response.data.data[2],
-      askSize: response.data.data[3],
-      dailyChange: response.data.data[4],
-      dailyChangePerc: response.data.data[5],
-      lastPrice: response.data.data[6],
-      volume: response.data.data[7],
-      high: response.data.data[8],
-      low: response.data.data[9],
-    } as TickerData;
+    if (pair[0] === "t") {
+      return {
+        bid: response.data[0],
+        bidSize: response.data[1],
+        ask: response.data[2],
+        askSize: response.data[3],
+        dailyChange: response.data[4],
+        dailyChangePerc: response.data[5],
+        lastPrice: response.data[6],
+        volume: response.data[7],
+        high: response.data[8],
+        low: response.data[9],
+      } as TickerTradeData;
+    } else if (pair[0] === "f") {
+      return {
+        frr: response.data[0],
+        bid: response.data[1],
+        bidPeriod: response.data[2],
+        bidSize: response.data[3],
+        ask: response.data[4],
+        askPeriod: response.data[5],
+        askSize: response.data[6],
+        dailyChange: response.data[7],
+        dailyChangePerc: response.data[8],
+        lastPrice: response.data[9],
+        volume: response.data[10],
+        high: response.data[11],
+        low: response.data[12],
+      } as TickerFundingData;
+    } else return undefined;
   };
 }

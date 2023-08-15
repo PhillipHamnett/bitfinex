@@ -10,7 +10,7 @@
     "build": "npm run clean && npm run build:esm && npm run build:cjs",
     "build:esm": "tsc -p ./tsconfig.esm.json; echo '{\"type\": \"module\"}' > ./lib/esm/src/src/package.json",
     "build:cjs": "tsc -p ./tsconfig.cjs.json; echo '{\"type\": \"commonjs\"}' > ./lib/cjs/src/src/package.json",
-    "test": "jest"
+    "test": "jest --silent=false"
   },
   "repository": {
     "type": "git",

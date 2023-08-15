@@ -4,6 +4,18 @@ interface AuthenticationSignature {
     sig: string;
     nonce: number;
 }
+interface TickerData {
+    bid: number;
+    bidSize: number;
+    ask: number;
+    askSize: number;
+    dailyChange: number;
+    dailyChangePerc: number;
+    lastPrice: number;
+    volume: number;
+    high: number;
+    low: number;
+}
 export declare class Bitfinex {
     private _url;
     private _apiKey;
@@ -31,7 +43,7 @@ export declare class Bitfinex {
     _genAuthSig: (secret: string, payload?: string) => AuthenticationSignature;
     getNonce: () => number;
     getPlatformStatus: () => Promise<number>;
-    getTicker: (pair: string) => Promise<any>;
+    getTicker: (pair: string) => Promise<TickerData>;
 }
 export {};
 //# sourceMappingURL=index.d.ts.map
