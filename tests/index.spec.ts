@@ -1,4 +1,4 @@
-import { Bitfinex } from "../src";
+import { Bitfinex, TradeFundingData, TradeTradesData } from "../src";
 
 const bitfinex = new Bitfinex();
 
@@ -90,6 +90,21 @@ describe("Tickers History", () => {
 });
 describe("Trades", () => {
   it("should show the trades for a trading pair", async () => {
-    const result = await bitfinex.getTrades("tBTCUSD");
+    const result = (await bitfinex.getTrades("tBTCUSD"))[0] as TradeTradesData;
+    expect(result).toBeDefined();
+    expect(result).toHaveProperty("id");
+    expect(result).toHaveProperty("mts");
+    expect(result).toHaveProperty("amount");
+    expect(result).toHaveProperty("price");
+  });
+  it("should show the trades for a funding pair", async () => {
+    const result = (await bitfinex.getTrades("fUSD"))[0] as TradeFundingData;
+
+    expect(result).toBeDefined();
+    expect(result).toHaveProperty("id");
+    expect(result).toHaveProperty("mts");
+    expect(result).toHaveProperty("amount");
+    expect(result).toHaveProperty("rate");
+    expect(result).toHaveProperty("period");
   });
 });

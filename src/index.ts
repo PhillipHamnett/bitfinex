@@ -57,6 +57,19 @@ export interface TickersHistoryData {
   ask: number;
   mts: number;
 }
+export interface TradeTradesData {
+  id: number;
+  mts: number;
+  amount: number;
+  price: number;
+}
+export interface TradeFundingData {
+  id: number;
+  mts: number;
+  amount: number;
+  rate: number;
+  period: number;
+}
 export class Bitfinex {
   private _url: string;
   private _apiKey: string;
@@ -282,5 +295,34 @@ export class Bitfinex {
     sort: number = -1,
     start: string = "",
     end: string = "",
-  ): Promise<void> => {};
+  ): Promise<(TradeTradesData | TradeFundingData)[]> => {
+    let startParameter = "";
+    let endParameter = "";
+    if (start !== "") startParameter = `&start=${start}`;
+    if (end !== "") endParameter = `&end=${end}`;
+    const url = `https://api-pub.bitfinex.com/v2/trades/${symbol}/hist?limit=${limit}&sort=${sort}${startParameter}${endParameter}`;
+    const response: AxiosResponse<number[][]> = await axios.get(url);
+    if (response.status !== 200)
+      throw new Error("Failed to get trades: " + response.statusText);
+    if (symbol[0] === "t") {
+      return response.data.map((trade) => {
+        return {
+          id: trade[0],
+          mts: trade[1],
+          amount: trade[2],
+          price: trade[3],
+        };
+      }) as TradeTradesData[];
+    } else {
+      return response.data.map((funding) => {
+        return {
+          id: funding[0],
+          mts: funding[1],
+          amount: funding[2],
+          rate: funding[3],
+          period: funding[4],
+        };
+      }) as TradeFundingData[];
+    }
+  };
 }
