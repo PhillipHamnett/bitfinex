@@ -51,6 +51,12 @@ export interface TickersTradeData extends TickerTradeData {
 export interface TickersFundingData extends TickerFundingData {
   symbol: string;
 }
+export interface TickersHistoryData {
+  symbol: string;
+  bid: number;
+  ask: number;
+  mts: number;
+}
 export class Bitfinex {
   private _url: string;
   private _apiKey: string;
@@ -244,5 +250,29 @@ export class Bitfinex {
         } as TickersFundingData;
       }
     });
+  };
+
+  getTickersHistory = async (
+    symbol: string = "ALL",
+    limit: number = 250,
+    start: string = "",
+    end: string = "",
+  ): Promise<TickersHistoryData[]> => {
+    let startParameter = "";
+    let endParameter = "";
+    if (start !== "") startParameter = `&start=${start}`;
+    if (end !== "") endParameter = `&end=${end}`;
+    const url = `https://api-pub.bitfinex.com/v2/tickers/hist?symbols=${symbol}&limit=${limit}${startParameter}${endParameter}`;
+    const response: AxiosResponse<GetTickersResponse> = await axios.get(url);
+    if (response.status !== 200)
+      throw new Error("Failed to get tickers history: " + response.statusText);
+    return response.data.map((ticker) => {
+      return {
+        symbol: ticker[0],
+        bid: ticker[1],
+        ask: ticker[3],
+        mts: ticker[12],
+      };
+    }) as TickersHistoryData[];
   };
 }

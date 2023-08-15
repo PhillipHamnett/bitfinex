@@ -77,4 +77,14 @@ describe("Tickers", () => {
   });
 });
 
-describe("Tickers History", () => {});
+describe("Tickers History", () => {
+  it("should show the history of all tickers", async () => {
+    const result = await bitfinex.getTickersHistory();
+    expect(result).toBeDefined();
+    expect(result.length).toBeGreaterThan(0);
+    expect(result[0]).toHaveProperty("symbol");
+    expect(result[0]).toHaveProperty("bid");
+    expect(result[0]).toHaveProperty("ask");
+    expect(result[0]).toHaveProperty("mts");
+  });
+});
