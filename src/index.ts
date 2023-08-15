@@ -70,6 +70,29 @@ export interface TradeFundingData {
   rate: number;
   period: number;
 }
+type BookPrecision = "P0" | "P1" | "P2" | "P3" | "R0";
+export interface BookTradeData {
+  price: number;
+  count: number;
+  amount: number;
+}
+export interface BookTradeRawData {
+  orderId: number;
+  price: number;
+  amount: number;
+}
+export interface BookFundingData {
+  rate: number;
+  period: number;
+  count: number;
+  amount: number;
+}
+export interface BookFundingRawData {
+  offerId: number;
+  rate: number;
+  period: number;
+  amount: number;
+}
 export class Bitfinex {
   private _url: string;
   private _apiKey: string;
@@ -323,6 +346,56 @@ export class Bitfinex {
           period: funding[4],
         };
       }) as TradeFundingData[];
+    }
+  };
+
+  getBook = async (
+    symbol: string,
+    precision: BookPrecision,
+    length: number = 100,
+  ): Promise<
+    (BookTradeData | BookFundingData | BookTradeRawData | BookFundingRawData)[]
+  > => {
+    const url = `https://api-pub.bitfinex.com/v2/book/${symbol}/${precision}?len=${length}`;
+    const response: AxiosResponse<number[][]> = await axios.get(url);
+    if (response.status !== 200)
+      throw new Error("Failed to get book: " + response.statusText);
+    if (symbol[0] === "t") {
+      if (precision[0] === "P")
+        return response.data.map((order) => {
+          return {
+            price: order[0],
+            count: order[1],
+            amount: order[2],
+          };
+        }) as BookTradeData[];
+      else
+        return response.data.map((order) => {
+          return {
+            orderId: order[0],
+            price: order[1],
+            amount: order[2],
+          };
+        }) as BookTradeRawData[];
+    } else {
+      if (precision[0] === "P")
+        return response.data.map((order) => {
+          return {
+            rate: order[0],
+            period: order[1],
+            count: order[2],
+            amount: order[3],
+          };
+        }) as BookFundingData[];
+      else
+        return response.data.map((order) => {
+          return {
+            offerId: order[0],
+            period: order[1],
+            rate: order[2],
+            amount: order[3],
+          };
+        }) as BookFundingRawData[];
     }
   };
 }

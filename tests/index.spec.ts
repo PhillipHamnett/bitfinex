@@ -99,12 +99,48 @@ describe("Trades", () => {
   });
   it("should show the trades for a funding pair", async () => {
     const result = (await bitfinex.getTrades("fUSD"))[0] as TradeFundingData;
-
     expect(result).toBeDefined();
     expect(result).toHaveProperty("id");
     expect(result).toHaveProperty("mts");
     expect(result).toHaveProperty("amount");
     expect(result).toHaveProperty("rate");
     expect(result).toHaveProperty("period");
+  });
+});
+
+describe("Book", () => {
+  it("should show the trading pair book", async () => {
+    const result = await bitfinex.getBook("tBTCUSD", "P0", 25);
+    expect(result).toBeDefined();
+    expect(result.length).toBeGreaterThan(0);
+    expect(result[0]).toHaveProperty("price");
+    expect(result[0]).toHaveProperty("count");
+    expect(result[0]).toHaveProperty("amount");
+  });
+  it("should show the funding pair book", async () => {
+    const result = await bitfinex.getBook("fUSD", "P0", 25);
+    expect(result).toBeDefined();
+    expect(result.length).toBeGreaterThan(0);
+    expect(result[0]).toHaveProperty("rate");
+    expect(result[0]).toHaveProperty("period");
+    expect(result[0]).toHaveProperty("count");
+    expect(result[0]).toHaveProperty("amount");
+  });
+  it("should show the raw trading pair book", async () => {
+    const result = await bitfinex.getBook("tBTCUSD", "R0", 25);
+    expect(result).toBeDefined();
+    expect(result.length).toBeGreaterThan(0);
+    expect(result[0]).toHaveProperty("orderId");
+    expect(result[0]).toHaveProperty("price");
+    expect(result[0]).toHaveProperty("amount");
+  });
+  it("should show the raw funding pair book", async () => {
+    const result = await bitfinex.getBook("fUSD", "R0", 25);
+    expect(result).toBeDefined();
+    expect(result.length).toBeGreaterThan(0);
+    expect(result[0]).toHaveProperty("offerId");
+    expect(result[0]).toHaveProperty("period");
+    expect(result[0]).toHaveProperty("rate");
+    expect(result[0]).toHaveProperty("amount");
   });
 });
