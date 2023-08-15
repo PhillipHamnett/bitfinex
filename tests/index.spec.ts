@@ -38,3 +38,39 @@ describe("Ticker", () => {
     expect(result).toHaveProperty("low");
   });
 });
+
+describe("Tickers", () => {
+  it("should show all tickers", async () => {
+    const result = await bitfinex.getTickers();
+    expect(result).toBeDefined();
+    expect(result.length).toBeGreaterThan(0);
+    expect(result[0]).toHaveProperty("symbol");
+    const tradeTickers = result.filter((ticker) => ticker.symbol[0] === "t")[0];
+    expect(tradeTickers).toHaveProperty("bid");
+    expect(tradeTickers).toHaveProperty("bidSize");
+    expect(tradeTickers).toHaveProperty("ask");
+    expect(tradeTickers).toHaveProperty("askSize");
+    expect(tradeTickers).toHaveProperty("dailyChange");
+    expect(tradeTickers).toHaveProperty("dailyChangePerc");
+    expect(tradeTickers).toHaveProperty("lastPrice");
+    expect(tradeTickers).toHaveProperty("volume");
+    expect(tradeTickers).toHaveProperty("high");
+    expect(tradeTickers).toHaveProperty("low");
+    const fundingTickers = result.filter(
+      (ticker) => ticker.symbol[0] === "f",
+    )[0];
+    expect(fundingTickers).toHaveProperty("frr");
+    expect(fundingTickers).toHaveProperty("bid");
+    expect(fundingTickers).toHaveProperty("bidPeriod");
+    expect(fundingTickers).toHaveProperty("bidSize");
+    expect(fundingTickers).toHaveProperty("ask");
+    expect(fundingTickers).toHaveProperty("askPeriod");
+    expect(fundingTickers).toHaveProperty("askSize");
+    expect(fundingTickers).toHaveProperty("dailyChange");
+    expect(fundingTickers).toHaveProperty("dailyChangePerc");
+    expect(fundingTickers).toHaveProperty("lastPrice");
+    expect(fundingTickers).toHaveProperty("volume");
+    expect(fundingTickers).toHaveProperty("high");
+    expect(fundingTickers).toHaveProperty("low");
+  });
+});

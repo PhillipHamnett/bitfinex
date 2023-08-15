@@ -15,7 +15,8 @@ export interface AuthenticationSignature {
   nonce: number;
 }
 type GetTickerResponse = number[];
-
+type TickersData = [string, ...number[]];
+type GetTickersResponse = TickersData[];
 export interface TickerTradeData {
   bid: number;
   bidSize: number;
@@ -42,6 +43,12 @@ export interface TickerFundingData {
   volume: number;
   high: number;
   low: number;
+}
+export interface TickersTradeData extends TickerTradeData {
+  symbol: string;
+}
+export interface TickersFundingData extends TickerFundingData {
+  symbol: string;
 }
 export class Bitfinex {
   private _url: string;
@@ -177,7 +184,7 @@ export class Bitfinex {
         high: response.data[8],
         low: response.data[9],
       } as TickerTradeData;
-    } else if (pair[0] === "f") {
+    } else
       return {
         frr: response.data[0],
         bid: response.data[1],
@@ -193,6 +200,46 @@ export class Bitfinex {
         high: response.data[11],
         low: response.data[12],
       } as TickerFundingData;
-    } else return undefined;
+  };
+
+  getTickers = async (): Promise<(TickersTradeData | TickersFundingData)[]> => {
+    const url = `https://api-pub.bitfinex.com/v2/tickers?symbols=ALL`;
+    const response: AxiosResponse<GetTickersResponse> = await axios.get(url);
+    if (response.status !== 200)
+      throw new Error("Failed to get tickers: " + response.statusText);
+    return response.data.map((ticker) => {
+      if (ticker[0][0] === "t") {
+        return {
+          symbol: ticker[0],
+          bid: ticker[1],
+          bidSize: ticker[2],
+          ask: ticker[3],
+          askSize: ticker[4],
+          dailyChange: ticker[5],
+          dailyChangePerc: ticker[6],
+          lastPrice: ticker[7],
+          volume: ticker[8],
+          high: ticker[9],
+          low: ticker[10],
+        } as TickersTradeData;
+      } else {
+        return {
+          symbol: ticker[0],
+          frr: ticker[1],
+          bid: ticker[2],
+          bidPeriod: ticker[3],
+          bidSize: ticker[4],
+          ask: ticker[5],
+          askPeriod: ticker[6],
+          askSize: ticker[7],
+          dailyChange: ticker[8],
+          dailyChangePerc: ticker[9],
+          lastPrice: ticker[10],
+          volume: ticker[11],
+          high: ticker[12],
+          low: ticker[13],
+        } as TickersFundingData;
+      }
+    });
   };
 }
