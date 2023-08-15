@@ -43,6 +43,7 @@ export interface TickerFundingData {
   volume: number;
   high: number;
   low: number;
+  frrAmountAvailable: number;
 }
 export interface TickersTradeData extends TickerTradeData {
   symbol: string;
@@ -199,6 +200,7 @@ export class Bitfinex {
         volume: response.data[10],
         high: response.data[11],
         low: response.data[12],
+        frrAmountAvailable: response.data[15], // Elements 13 and 14 are reserved
       } as TickerFundingData;
   };
 
@@ -238,6 +240,7 @@ export class Bitfinex {
           volume: ticker[11],
           high: ticker[12],
           low: ticker[13],
+          frrAmountAvailable: ticker[16], // Elements 14 and 15 are reserved
         } as TickersFundingData;
       }
     });

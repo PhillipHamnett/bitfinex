@@ -36,6 +36,7 @@ describe("Ticker", () => {
     expect(result).toHaveProperty("volume");
     expect(result).toHaveProperty("high");
     expect(result).toHaveProperty("low");
+    expect(result).toHaveProperty("frrAmountAvailable");
   });
 });
 
@@ -72,5 +73,8 @@ describe("Tickers", () => {
     expect(fundingTickers).toHaveProperty("volume");
     expect(fundingTickers).toHaveProperty("high");
     expect(fundingTickers).toHaveProperty("low");
+    expect(fundingTickers).toHaveProperty("frrAmountAvailable");
   });
 });
+
+describe("Tickers History", () => {});
