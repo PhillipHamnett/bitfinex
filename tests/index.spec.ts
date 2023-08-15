@@ -88,3 +88,8 @@ describe("Tickers History", () => {
     expect(result[0]).toHaveProperty("mts");
   });
 });
+describe("Trades", () => {
+  it("should show the trades for a trading pair", async () => {
+    const result = await bitfinex.getTrades("tBTCUSD");
+  });
+});

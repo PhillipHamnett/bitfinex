@@ -275,4 +275,12 @@ export class Bitfinex {
       };
     }) as TickersHistoryData[];
   };
+
+  getTrades = async (
+    symbol: string,
+    limit: number = 10000,
+    sort: number = -1,
+    start: string = "",
+    end: string = "",
+  ): Promise<void> => {};
 }
