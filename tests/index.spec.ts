@@ -1,4 +1,12 @@
-import { Bitfinex, TradeFundingData, TradeTradesData } from "../src";
+import {
+  Bitfinex,
+  BookFundingData,
+  BookFundingRawData,
+  BookTradeData,
+  BookTradeRawData,
+  TradeFundingData,
+  TradeTradesData,
+} from "../src";
 
 const bitfinex = new Bitfinex();
 
@@ -110,7 +118,11 @@ describe("Trades", () => {
 
 describe("Book", () => {
   it("should show the trading pair book", async () => {
-    const result = await bitfinex.getBook("tBTCUSD", "P0", 25);
+    const result = (await bitfinex.getBook(
+      "tBTCUSD",
+      "P0",
+      25,
+    )) as BookTradeData[];
     expect(result).toBeDefined();
     expect(result.length).toBeGreaterThan(0);
     expect(result[0]).toHaveProperty("price");
@@ -118,7 +130,11 @@ describe("Book", () => {
     expect(result[0]).toHaveProperty("amount");
   });
   it("should show the funding pair book", async () => {
-    const result = await bitfinex.getBook("fUSD", "P0", 25);
+    const result = (await bitfinex.getBook(
+      "fUSD",
+      "P0",
+      25,
+    )) as BookFundingData[];
     expect(result).toBeDefined();
     expect(result.length).toBeGreaterThan(0);
     expect(result[0]).toHaveProperty("rate");
@@ -127,7 +143,11 @@ describe("Book", () => {
     expect(result[0]).toHaveProperty("amount");
   });
   it("should show the raw trading pair book", async () => {
-    const result = await bitfinex.getBook("tBTCUSD", "R0", 25);
+    const result = (await bitfinex.getBook(
+      "tBTCUSD",
+      "R0",
+      25,
+    )) as BookTradeRawData[];
     expect(result).toBeDefined();
     expect(result.length).toBeGreaterThan(0);
     expect(result[0]).toHaveProperty("orderId");
@@ -135,7 +155,11 @@ describe("Book", () => {
     expect(result[0]).toHaveProperty("amount");
   });
   it("should show the raw funding pair book", async () => {
-    const result = await bitfinex.getBook("fUSD", "R0", 25);
+    const result = (await bitfinex.getBook(
+      "fUSD",
+      "R0",
+      25,
+    )) as BookFundingRawData[];
     expect(result).toBeDefined();
     expect(result.length).toBeGreaterThan(0);
     expect(result[0]).toHaveProperty("offerId");
