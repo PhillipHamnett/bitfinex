@@ -294,11 +294,7 @@ export class Bitfinex {
     start: string = "",
     end: string = "",
   ): Promise<TickersHistoryData[]> => {
-    let startParameter = "";
-    let endParameter = "";
-    if (start !== "") startParameter = `&start=${start}`;
-    if (end !== "") endParameter = `&end=${end}`;
-    const url = `https://api-pub.bitfinex.com/v2/tickers/hist?symbols=${symbol}&limit=${limit}${startParameter}${endParameter}`;
+    const url = `https://api-pub.bitfinex.com/v2/tickers/hist?symbols=${symbol}&limit=${limit}&start=${start}&end=${end}`;
     const response: AxiosResponse<GetTickersResponse> = await axios.get(url);
     if (response.status !== 200)
       throw new Error("Failed to get tickers history: " + response.statusText);
@@ -319,11 +315,7 @@ export class Bitfinex {
     start: string = "",
     end: string = "",
   ): Promise<(TradeTradesData | TradeFundingData)[]> => {
-    let startParameter = "";
-    let endParameter = "";
-    if (start !== "") startParameter = `&start=${start}`;
-    if (end !== "") endParameter = `&end=${end}`;
-    const url = `https://api-pub.bitfinex.com/v2/trades/${symbol}/hist?limit=${limit}&sort=${sort}${startParameter}${endParameter}`;
+    const url = `https://api-pub.bitfinex.com/v2/trades/${symbol}/hist?limit=${limit}&sort=${sort}&start=${start}&end=${end}`;
     const response: AxiosResponse<number[][]> = await axios.get(url);
     if (response.status !== 200)
       throw new Error("Failed to get trades: " + response.statusText);
@@ -397,5 +389,17 @@ export class Bitfinex {
           };
         }) as BookFundingRawData[];
     }
+  };
+
+  getTradeCandles = async (
+    timeframe: string,
+    tradingPair: string,
+    section: string = "hist",
+    sort: number = -1,
+    start: string = "",
+    end: string = "",
+    limit: number = 10000,
+  ): Promise<number[][]> => {
+    return [];
   };
 }

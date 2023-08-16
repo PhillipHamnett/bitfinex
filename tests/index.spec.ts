@@ -168,3 +168,17 @@ describe("Book", () => {
     expect(result[0]).toHaveProperty("amount");
   });
 });
+
+describe("Candles", () => {
+  it("should show the historical candles for a trading pair", async () => {
+    const result = await bitfinex.getTradeCandles(
+      "1m",
+      "tBTCUSD",
+      "hist",
+      -1,
+      "",
+      "",
+      2,
+    );
+  });
+});
